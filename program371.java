@@ -1,7 +1,8 @@
 import java.lang.*;
 import java.util.*;
 
-// create table student(RID int, Name varchar(255), Salary int);
+import javax.lang.model.type.ErrorType;
+
 // Database table / schema
 class Student
 {
@@ -67,17 +68,19 @@ class DBMS
                             System.out.println("This application is used to demonstrates the customised DBMS");
                             System.out.println("Terminate DBMS:         Exit");
                             System.out.println("Display all data :      select * from student");
+                            System.out.println("Display all data :      count student");
                             System.out.println("Insert data :           insert into student s_Name s_Salary");
                             System.out.println("Display data by Name    select * from student where name _____");
                             System.out.println("Display data by RID:    select * from student where rollno ____");
-                            System.out.println("Update data by RID:     update student set Name _____ salary ____ where rid __");
-                            System.out.println("delete data by RID:     delete rid ___");
+                            System.out.println("Update data by RID:     update student set Name _____ salary ____ where rollno __");
+                            System.out.println("Update data by RID:     update student set Name _____ where rollno __");
+                            System.out.println("Update data by RID:     update student set salary ____ where rollno __");
+                            System.out.println("delete data by RID:     delete rollno ___");
                             System.out.println("delete data by Name:    delete name ___");
                             System.out.println("Display minimum salary: select min salary from student");
                             System.out.println("Display maximum salary: select max salary from student");
-                            System.out.println("Display total salary: select sum salary from student");
+                            System.out.println("Display total salary:   select sum salary from student");
                             System.out.println("Display average salary: select avg salary from student");
-    
                             System.out.println("------------------------------------------------------------------");
                             System.out.println("------------------------------------------------------------------");
                         }
@@ -88,12 +91,27 @@ class DBMS
                         }
                         else
                         {
-                            System.out.println("Invalid Query.....Try Again !!!");
+                            Error();
                         }
                     }
                     else if(QuerySize == 2)
                     {
-
+                        if("count".equals(tokens[0]))
+                        {
+                            if("student".equals(tokens[1]))
+                            {
+                                CountStudent();
+                                // or AggregateCount();
+                            }   
+                            else
+                            {
+                                Error();
+                            }
+                        }
+                        else
+                        {
+                            Error();
+                        }
                     }
                         //insert into student piyush 54444
                         //select min salary from student
@@ -101,28 +119,74 @@ class DBMS
                         //select sum salary from student
                         //select avg salary from student
     
-
                     else if(QuerySize==5)
                     {
                         if("insert".equals(tokens[0]))
                         {
-                            InsertData(tokens[3],Integer.parseInt(tokens[4]));
+                            if("into".equals(tokens[1]))
+                            {
+                                if("student".equals(tokens[2]))
+                                {
+                                    InsertData(tokens[3],Integer.parseInt(tokens[4]));        
+                                }
+                                else
+                                {
+                                    Error();
+                                }
+                            }
+                            else
+                            {
+                                Error();
+                            }
                         }
-                        else if("select".equals(tokens[0]) && "max".equals(tokens[1]))
+       
+                        else if("select".equals(tokens[0]))
                         {
-                            AggregateMax();
+                            if("salary".equals(tokens[2]))
+                            {
+                                if("from".equals(tokens[3]))
+                                {
+                                    if("student".equals(tokens[4]))
+                                    {
+                                        if("max".equals(tokens[1]))
+                                        {
+                                            AggregateMax();
+                                        }
+                                        else if("min".equals(tokens[1]))
+                                        {
+                                            AggregateMin();
+                                        }
+                                        else if("sum".equals(tokens[1]))
+                                        {
+                                            AggregateSum();
+                                        }
+                                        else if("avg".equals(tokens[1]))
+                                        {
+                                            AggregateAvg();
+                                        }
+                                        else
+                                        {
+                                            Error();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Error();
+                                    }
+                                }
+                                else
+                                {
+                                    Error();
+                                }
+                            }
+                            else
+                            {
+                                Error();
+                            }
                         }
-                        else if("select".equals(tokens[0]) && "min".equals(tokens[1]))
+                        else
                         {
-                            AggregateMin();
-                        }
-                        else if("select".equals(tokens[0]) && "sum".equals(tokens[1]))
-                        {
-                            AggregateSum();
-                        }
-                        else if("select".equals(tokens[0]) && "avg".equals(tokens[1]))
-                        {
-                            AggregateAvg();
+                            Error();
                         }
                     }
                         //select * from student
@@ -132,18 +196,116 @@ class DBMS
                         {
                             if("*".equals(tokens[1]))
                             {
-                                DisplayAll();
+                                if("from".equals(tokens[2]))
+                                {
+                                    if("student".equals(tokens[3]))
+                                    {
+                                        DisplayAll();
+                                    }
+                                    else
+                                    {
+                                        Error();
+                                    }
+                                }
+                                else
+                                {
+                                    Error();
+                                }
                             }
-                            
+                            else
+                            {
+                                Error();
+                            }
+                        }
+                        else
+                        {
+                            Error();
+
                         }
                     }
-                    
+                    // update student set Name _____ where rollno __");
+                    // update student set salary ____ where rollno __");
+                    else if(QuerySize==8)
+                    {
+                        if("update".equals(tokens[0]))
+                        {
+                            if("student".equals(tokens[1]))
+                            {
+                                if("set".equals(tokens[2]))
+                                {
+                                    if("where".equals(tokens[5]))
+                                    {
+                                        if("rollno".equals(tokens[6]))
+                                        {
+                                            if("name".equals(tokens[3]))
+                                            {
+                                                UpdateSpecific(Integer.parseInt(tokens[7]),tokens[4]);
+                                            }
+                                            else if("salary".equals(tokens[3]))
+                                            {
+                                                UpdateSpecific(Integer.parseInt(tokens[7]),Integer.parseInt(tokens[4]));
+                                            }
+                                            else
+                                            {
+                                                Error();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Error();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Error();
+                                    }
+                                }
+                                else
+                                {
+                                    Error();
+                                }
+                            }
+                            else
+                            {
+                                Error();
+                            }
+                        }
+                        else
+                        {
+                            Error();
+                        }
+                    }
                     //update student set Name Ram salary 66000 where rid 2
                     else if(QuerySize==10)
                     {
-                        if("update".equals(tokens[0])&& "set".equals(tokens[2]))
+                        if("update".equals(tokens[0]))
                         {
-                            UpdateSpecific(Integer.parseInt(tokens[9]),tokens[4],Integer.parseInt(tokens[6]));
+                            if("student".equals(tokens[1]))
+                            {
+                                if("set".equals(tokens[2]))
+                                {
+                                    if("name".equals(tokens[3]))
+                                    {
+                                        UpdateSpecific(Integer.parseInt(tokens[9]),tokens[4],Integer.parseInt(tokens[6]));
+                                    }
+                                    else
+                                    {
+                                        Error();
+                                    }
+                                }
+                                else
+                                {
+                                    Error();
+                                }
+                            }
+                            else
+                            {
+                                Error();
+                            }
+                        }
+                        else
+                        {
+                            Error();
                         }
                     }
                     //select * from student where Rollno 3
@@ -151,17 +313,54 @@ class DBMS
                     {
                         if("select".equals(tokens[0]))
                         {
-                            if("rollno".equals(tokens[5]))
+                            if("*".equals(tokens[1]))
                             {
-                                DisplaySpecific(Integer.parseInt(tokens[6]));   
+                                if("from".equals(tokens[2]))
+                                {
+                                    if("student".equals(tokens[3]))
+                                    {
+                                        if("where".equals(tokens[4]))
+                                        {
+                                            if("rollno".equals(tokens[5]))
+                                            {
+                                                DisplaySpecific(Integer.parseInt(tokens[6]));  
+                                            }
+                                            else if("name".equals(tokens[5]))
+                                            {
+                                                DisplaySpecific(Integer.parseInt(tokens[6])); 
+                                            }
+                                            else
+                                            {
+                                                Error();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Error();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Error();
+                                    }
+                                }
+                                else
+                                {
+                                    Error();
+                                }
                             }
-                            else if("name".equals(tokens[5]))
+                            else
                             {
-                                DisplaySpecific(tokens[6]);
+                                Error();
                             }
+                        }
+                        else
+                        {
+                            Error();
                         }
                     }
                     //delete rid ___
+                    //delete name____
                     else if(QuerySize==3)
                     {
                         if("delete".equals(tokens[0]))
@@ -174,11 +373,19 @@ class DBMS
                             {
                                 DeleteSpecific(tokens[2]);
                             }
+                            else
+                            {
+                                Error();
+                            }
+                        }
+                        else
+                        {
+                            Error();
                         }
                     }
                     else
                     {
-                        System.out.println("Invalid Query.....Try Again !!!");
+                        Error();
                     }
                 
                 }
@@ -189,6 +396,19 @@ class DBMS
         }
     }
 
+    public void Error()
+    {
+        System.out.println("Invalid Query.....Try Again !!!");
+    }
+    public void CountStudent()
+    {
+        int Count=0;
+        for(Student sref:lobj)
+        {
+            Count++;
+        }
+        System.out.println("Count of student is ==> "+Count );
+    }
     // Insert into query
     public void InsertData(String str, int value)
     {
@@ -233,6 +453,28 @@ class DBMS
             if(sref.RID == rid)
             {
                 sref.Name=str;
+                sref.Salary=value;
+                break;
+            }
+        }
+    }
+    public void UpdateSpecific(int rid,String str)
+    {
+        for(Student sref : lobj)
+        {
+            if(sref.RID == rid)
+            {
+                sref.Name=str;
+                break;
+            }
+        }
+    }
+    public void UpdateSpecific(int rid,int value)
+    {
+        for(Student sref : lobj)
+        {
+            if(sref.RID == rid)
+            {
                 sref.Salary=value;
                 break;
             }
@@ -302,7 +544,12 @@ class DBMS
         }
 
         System.out.println("Information of student having maximum salary : ");
+        System.out.println("-------------------------------------------------------");
+        System.out.println("Roll No"+"\t\t"+"Name"+"\t\t"+"Salary");
+        System.out.println("-------------------------------------------------------");
         temp.DisplayData();
+        System.out.println("-------------------------------------------------------");
+
     }
 
     public void AggregateMin()
@@ -320,7 +567,10 @@ class DBMS
         }
 
         System.out.println("Information of student having minimum salary : ");
+        System.out.println("-------------------------------------------------------");
         temp.DisplayData();
+        System.out.println("-------------------------------------------------------");
+
     }
 
     public void AggregateSum()
@@ -332,7 +582,7 @@ class DBMS
             iSum = iSum + sref.Salary;
         }
 
-        System.out.println("Summation of salaries is : "+ iSum);
+        System.out.println("Summation of salaries is :==> "+ iSum);
     }
 
     public void AggregateAvg()
@@ -344,12 +594,12 @@ class DBMS
             iSum = iSum + sref.Salary;
         }
 
-        System.out.println("Average salary is : "+ iSum / (lobj.size()));
+        System.out.println("Average salary is :==> "+ iSum / (lobj.size()));
     }
 
     public void AggregateCount()
     {
-         System.out.println("Count is : "+lobj.size());
+         System.out.println("Count is :==> "+lobj.size());
     }
 }
 
